@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import axios, { AxiosInstance, AxiosStatic } from 'axios'
+import axios, { AxiosInstance } from 'axios'
 
 async function handler (_req: NextApiRequest, res: NextApiResponse) {
   const method = _req.method
