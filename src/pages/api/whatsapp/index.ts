@@ -47,8 +47,8 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
       to: _req.body.message.from,
       contents:[{ 
         type: 'text',
-        text: 'Oi !!!!!'
-      }]
+        text: _req.body.message.text
+      }, ]
     }
 
     const requestResult = await configureProvider(ZENVIA_SANDBOX_TOKEN, ZENVIA_WHATSAPP_URL)
