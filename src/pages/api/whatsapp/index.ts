@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import axios, { AxiosInstance } from 'axios'
 
+import mentoringData from '../../../utils/mentoring-data'
+import mentoring from '../../../utils/mentoring-data'
+
 async function handler (_req: NextApiRequest, res: NextApiResponse) {
   const method = _req.method
 
@@ -11,7 +14,7 @@ const ZENVIA_SANDBOX_TOKEN = `${process.env.ZENVIA_SANDBOX_TOKEN}`
 const ZENVIA_WHATSAPP_URL = `${process.env.ZENVIA_WHATSAPP_URL}`
 
  
-interface BodySengingText {
+type BodySengingText = {
   from: string,
   to: string,
   contents: [
@@ -21,6 +24,10 @@ interface BodySengingText {
     }
   ]
 }
+
+const commandList = [
+  'mentoria'
+]
 
 async function configureProvider(token:string, baseURL:string){
   return await axios.create({
@@ -39,6 +46,26 @@ async function sendingMessage(request: AxiosInstance,contact:BodySengingText){
     })
 }
 
+async function mentoringIsValid(id:number){
+  const mentoring = await mentoringData[0]
+  console.log(mentoring.id, id)
+  return mentoring.id === id ? true : false
+}
+
+function testContentArray<T>(array:T[]) {
+  return async function(value:T): Promise <T> {
+    const result = array.find((element) => element === value)
+    if(result){
+      return result 
+    }
+    throw 'Commando inválido'
+  }
+}
+
+const testCommandIsValid = testContentArray<string>(commandList)
+
+// console.log(testCommandIsValid('mentorias'))
+
 async function message(_req: NextApiRequest, res: NextApiResponse){
   try {
 
@@ -47,9 +74,17 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
       to: _req.body.message.from,
       contents:[{ 
         type: 'text',
-        text: _req.body.message.text
+        text: _req.body.message.contents[0].text
       }, ]
     }
+
+    const message = _req.body.message.contents[0].text.trim().split(' ')
+    const [command, complement]:[string, string] = message[0].split('#')
+
+    const test = await testCommandIsValid(command)
+      .then(() => mentoringIsValid(parseInt(complement)))
+      .then(console.log)
+      .catch(err => console.log(err))
 
     const requestResult = await configureProvider(ZENVIA_SANDBOX_TOKEN, ZENVIA_WHATSAPP_URL)
       .then(provider => sendingMessage(provider, contact))
