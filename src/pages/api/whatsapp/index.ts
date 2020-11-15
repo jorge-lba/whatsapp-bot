@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import axios, { AxiosInstance } from 'axios'
 
 import mentoringData from '../../../utils/mentoring-data'
-import mentoring from '../../../utils/mentoring-data'
 
 async function handler (_req: NextApiRequest, res: NextApiResponse) {
   const method = _req.method
@@ -64,8 +63,6 @@ function testContentArray<T>(array:T[]) {
 
 const testCommandIsValid = testContentArray<string>(commandList)
 
-// console.log(testCommandIsValid('mentorias'))
-
 async function message(_req: NextApiRequest, res: NextApiResponse){
   try {
 
@@ -85,6 +82,8 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
       .then(() => mentoringIsValid(parseInt(complement)))
       .then(console.log)
       .catch(err => console.log(err))
+
+    console.log(test)
 
     const requestResult = await configureProvider(ZENVIA_SANDBOX_TOKEN, ZENVIA_WHATSAPP_URL)
       .then(provider => sendingMessage(provider, contact))
