@@ -32,7 +32,9 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
       .then(contacts => contacts.map(sendingMessage(provider)))
       .then(() => formatContactMessageText(from, to, 'Enviamos um aviso para os interessados.'))
       .then(sendingMessage(provider))
-      .catch(err => console.log(err))
+      .catch(err => {
+        sendingMessage(provider)(formatContactMessageText(from, to, err))
+      })
 
     res.status(200).json({
       message: 'Sua mensagem foi enviada'
