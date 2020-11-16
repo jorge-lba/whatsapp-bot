@@ -21,3 +21,28 @@ export type Mentoring = {
   mentor: Mentor,
   team: Team
 }
+
+export type BodySengingText = {
+  from: string,
+  to: string,
+  contents: [
+    {
+      type: string,
+      text: string
+    }
+  ]
+}
+
+export type Method = "get" | "GET" | 
+  "delete" | "DELETE" | 
+  "head" | "HEAD" | 
+  "options" | "OPTIONS" | 
+  "post" | "POST" | 
+  "put" | "PUT" | 
+  "patch" | "PATCH" | 
+  "purge" | "PURGE" | 
+  "link" | "LINK" | 
+  "unlink" | "UNLINK" | undefined
+
+
+export type MessageAndTo = {message: string, to: string}

@@ -1,30 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 
 import mentoringData from '../../../utils/mentoring-data'
-import { Mentoring } from '../../../interfaces'
-
-type BodySengingText = {
-  from: string,
-  to: string,
-  contents: [
-    {
-      type: string,
-      text: string
-    }
-  ]
-}
-
-type Method = "get" | "GET" | 
-  "delete" | "DELETE" | 
-  "head" | "HEAD" | 
-  "options" | "OPTIONS" | 
-  "post" | "POST" | 
-  "put" | "PUT" | 
-  "patch" | "PATCH" | 
-  "purge" | "PURGE" | 
-  "link" | "LINK" | 
-  "unlink" | "UNLINK" | undefined
-
+import { Mentoring, BodySengingText, Method, MessageAndTo } from '../../../interfaces'
 
 const splitAndFormatMessage = (message: string) => {
   const [fullCommand, text] = message.trim().split(' ')
@@ -101,8 +78,6 @@ export function formatContactMessageText(from: string, to: string, message: stri
     }, ]
   }
 }
-
-type MessageAndTo = {message: string, to: string}
 
 const formatMultContactsMessageText = (from: string) => 
   (contacts:MessageAndTo[]) => contacts.map(({message, to})=> formatContactMessageText(from, to, message))
