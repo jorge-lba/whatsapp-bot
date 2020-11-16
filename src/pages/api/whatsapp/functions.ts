@@ -52,9 +52,9 @@ const setAxiosConfig = (baseURL:string) =>
     method: method
   })
 
-export async function mentoringIsValid(id:number){
+export async function mentoringIsValid(id:string){
   const mentoring = await mentoringData[0]
-  if(mentoring.id === id){
+  if(mentoring.id === parseInt(id)){
     return mentoring
   }
   throw 'Mentoria inválida'

@@ -16,6 +16,7 @@ async function handler (_req: NextApiRequest, res: NextApiResponse) {
   if(method === 'POST') await message(_req, res)
 }
 
+
 async function message(_req: NextApiRequest, res: NextApiResponse){
   try {
     const {from:to, to:from} = _req.body.message
@@ -26,10 +27,10 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
     } = splitAndFormatMessage(_req.body.message.contents[0].text)
 
     await testCommandIsValid(command)
-      .then(() => mentoringIsValid(parseInt(complement)))
+      .then(() => mentoringIsValid(complement))
       .then(senderIsMentorOrParticipant(to))
       .then(formatMultContactsMessageText(from))
-      .then(contacts => contacts.map(sendingMessageWhatsappZenvia))
+      .then(sendingMultMessageWhatsappZenvia)
       .then(() => formatContactMessageText(from, to, 'Enviamos um aviso para os interessados.'))
       .then(sendingMessageWhatsappZenvia)
       .catch(async(err) => {
@@ -58,5 +59,6 @@ const provider = setAxiosConfig
 
 const testCommandIsValid = testContentArray<string>(commandList)
 const sendingMessageWhatsappZenvia = sendingMessage(provider)
+const sendingMultMessageWhatsappZenvia = (contacts:any) => contacts.map(sendingMessageWhatsappZenvia)
 
 export default handler
