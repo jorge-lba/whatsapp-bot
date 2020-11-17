@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
 
-import mentoringData from '../../../utils/mentoring-data'
 import { Mentoring, BodySengingText, Method, MessageAndTo } from '../../../interfaces'
 
 const splitAndFormatMessage = (message: string) => {
@@ -29,13 +28,16 @@ const setAxiosConfig = (baseURL:string) =>
     method: method
   })
 
-export async function mentoringIsValid(id:string){
-  const mentoring = await mentoringData[0]
-  if(mentoring.id === parseInt(id)){
-    return mentoring
+const testAnItemAgaintsVariousData = <T extends {[key:string]:any}>(data:T[]) => 
+  (item:string) => 
+  <E>(value:E) => {
+    const dataItem = data.find(element => element[item] === value)
+    if(dataItem){
+      return dataItem
+    } 
+    throw 'Mentoria inválida'
   }
-  throw 'Mentoria inválida'
-}
+
 
 export function testContentArray<T>(array:T[]) {
   return async function(value:T): Promise <T> {
@@ -86,5 +88,6 @@ export {
   splitAndFormatMessage,
   setAxiosConfig,
   sendingMessage,
-  formatMultContactsMessageText
+  formatMultContactsMessageText,
+  testAnItemAgaintsVariousData
 }

@@ -2,13 +2,15 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import {
   splitAndFormatMessage,
   sendingMessage,
-  mentoringIsValid,
   senderIsMentorOrParticipant,
   formatContactMessageText,
   testContentArray,
   setAxiosConfig,
-  formatMultContactsMessageText
+  formatMultContactsMessageText,
+  testAnItemAgaintsVariousData
 }from './functions'
+
+import mentoringData from '../../../utils/mentoring-data' // Esse item é um mock para simular uma resposta do banco de dados
 
 async function handler (_req: NextApiRequest, res: NextApiResponse) {
   const method = _req.method
@@ -16,10 +18,10 @@ async function handler (_req: NextApiRequest, res: NextApiResponse) {
   if(method === 'POST') await message(_req, res)
 }
 
-
 async function message(_req: NextApiRequest, res: NextApiResponse){
   try {
     const {from:to, to:from} = _req.body.message
+    const message = 'Enviamos um aviso para os interessados.'
 
     const {
       command,
@@ -27,11 +29,11 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
     } = splitAndFormatMessage(_req.body.message.contents[0].text)
 
     await testCommandIsValid(command)
-      .then(() => mentoringIsValid(complement))
+      .then(() => getMentoringIdIs(complement))
       .then(senderIsMentorOrParticipant(to))
       .then(formatMultContactsMessageText(from))
       .then(sendingMultMessageWhatsappZenvia)
-      .then(() => formatContactMessageText(from, to, 'Enviamos um aviso para os interessados.'))
+      .then(() => formatContactMessageText(from, to, message ))
       .then(sendingMessageWhatsappZenvia)
       .catch(async(err) => {
         const contact = formatContactMessageText(from, to, err)
@@ -60,5 +62,6 @@ const provider = setAxiosConfig
 const testCommandIsValid = testContentArray<string>(commandList)
 const sendingMessageWhatsappZenvia = sendingMessage(provider)
 const sendingMultMessageWhatsappZenvia = (contacts:any) => contacts.map(sendingMessageWhatsappZenvia)
+const getMentoringIdIs = testAnItemAgaintsVariousData(mentoringData)('id')
 
 export default handler
