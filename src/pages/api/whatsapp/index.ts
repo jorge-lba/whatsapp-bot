@@ -29,7 +29,7 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
     } = splitAndFormatMessage(_req.body.message.contents[0].text)
 
     await testCommandIsValid(command)
-      .then(() => getMentoringIdIs(complement))
+      .then(() => getMentoringIdIs(+complement))
       .then(senderIsMentorOrParticipant(to))
       .then(formatMultContactsMessageText(from))
       .then(sendingMultMessageWhatsappZenvia)
