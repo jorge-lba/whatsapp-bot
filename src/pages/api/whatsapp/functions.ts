@@ -3,8 +3,7 @@ import axios, { AxiosInstance } from 'axios'
 import { Mentoring, BodySengingText, Method, MessageAndTo } from '../../../interfaces'
 
 const splitAndFormatMessage = (message: string) => {
-  const [fullCommand, text] = message.trim().split(' ')
-  const [command, complement] = fullCommand.split('#')
+  const [command, complement, text] = message.trim().replace(' ', '#').split('#')
 
   return {
     command,
