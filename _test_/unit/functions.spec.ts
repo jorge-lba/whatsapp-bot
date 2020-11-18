@@ -5,7 +5,7 @@ import {
   testContentArray,
   testAnItemAgaintsVariousData,
   senderIsMentorOrParticipant,
-  // formatContactMessageText,
+  formatContactMessageText,
   // formatMultContactsMessageText,
 }from '../../src/pages/api/whatsapp/functions'
 
@@ -49,4 +49,16 @@ test('Deve verificar se o input corresponde a um participante ou mentor', () => 
 
   expect(result.to).toEqual(inputValue)
   expect(result.message).toEqual('O mentor(a) Jane está esperando o seu time para a mentoria.')
+})
+
+test('Deve formatar os dados de entrada e transformar em um objeto', () => {
+  const inputFrom = `${process.env.WHATSAPP_PARTICIPANT}`
+  const inputTo = `${process.env.ZENVIA_FROM}`
+  const inputMessage = 'OK'
+
+  const result = formatContactMessageText(inputFrom, inputTo, inputMessage)
+
+  expect(result.from).toEqual(inputFrom)
+  expect(result.to).toEqual(inputTo)
+  expect(result.contents[0].text).toEqual(inputMessage)
 })
