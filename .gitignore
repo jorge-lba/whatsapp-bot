@@ -7,6 +7,7 @@
 
 # testing
 /coverage
+mentoring-data-test.ts
 
 # next.js
 /.next/
