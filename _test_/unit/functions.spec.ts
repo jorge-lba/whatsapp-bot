@@ -57,7 +57,7 @@ test('Deve formatar os dados de entrada e transformar em um objeto', () => {
   const inputFrom = `${process.env.ZENVIA_FROM}`
   const inputMessage = 'OK'
 
-  const result = formatContactMessageText(inputFrom, inputTo, inputMessage)
+  const result = formatContactMessageText({from:inputFrom, to:inputTo, message:inputMessage})
 
   expect(result.from).toEqual(inputFrom)
   expect(result.to).toEqual(inputTo)
