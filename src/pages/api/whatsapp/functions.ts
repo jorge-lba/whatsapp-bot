@@ -37,15 +37,10 @@ const testAnItemAgaintsVariousData = <T extends {[key:string]:any}>(data:T[]) =>
     throw 'Mentoria inválida'
   }
 
-
-export function testContentArray<T>(array:T[]) {
-  return async function(value:T): Promise <T> {
-    const result = array.find((element) => element === value)
-    if(result){
-      return result 
-    }
-    throw 'Commando inválido'
-  }
+const testContentArray = <T>(array:T[]) => (value:T) => {
+  const result = array.find(element => element === value)
+  if(result) return result
+  throw 'Comando inválido'
 }
 
 export function senderIsMentorOrParticipant(from:string){
@@ -88,5 +83,6 @@ export {
   setAxiosConfig,
   sendingMessage,
   formatMultContactsMessageText,
-  testAnItemAgaintsVariousData
+  testAnItemAgaintsVariousData,
+  testContentArray
 }
