@@ -62,16 +62,14 @@ const senderIsMentorOrParticipant = (from: string) => (mentoring:Mentoring) => {
   throw 'Você não faz parte dessa mentoria, verifique o ID da sua mentoria'
 }
 
-export function formatContactMessageText(from: string, to: string, message: string): BodySengingText{
-  return {
-    from,
+const formatContactMessageText = (from: string, to:string, message:string):BodySengingText => ({
+  from,
     to,
     contents:[{ 
       type: 'text',
       text: message
-    }, ]
-  }
-}
+    }]
+})
 
 const formatMultContactsMessageText = (from: string) => 
   (contacts:MessageAndTo[]) => contacts.map(({message, to})=> formatContactMessageText(from, to, message))
@@ -83,5 +81,6 @@ export {
   formatMultContactsMessageText,
   testAnItemAgaintsVariousData,
   testContentArray,
-  senderIsMentorOrParticipant
+  senderIsMentorOrParticipant,
+  formatContactMessageText
 }
