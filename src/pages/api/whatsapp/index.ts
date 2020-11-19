@@ -7,7 +7,9 @@ import {
   testContentArray,
   setAxiosConfig,
   formatMultContactsMessageText,
-  testAnItemAgaintsVariousData
+  testAnItemAgaintsVariousData,
+  compose,
+  toLowerCase
 }from './functions'
 
 import mentoringData from '../../../utils/mentoring-data' // Esse item é um mock para simular uma resposta do banco de dados
@@ -23,22 +25,32 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
     const {from:to, to:from} = _req.body.message
     const message = 'Enviamos um aviso para os interessados.'
 
-    const {
-      command,
-      complement
-    } = splitAndFormatMessage(_req.body.message.contents[0].text)
+    try {
+      const recipients = await compose(
+        toLowerCase,
+        splitAndFormatMessage,
+        testCommandIsValid,
+        getMentoringIdIs,
+        senderIsMentorOrParticipant(to),
+        formatMultContactsMessageText(from),
+        sendingMultMessageWhatsappZenvia
+      )(_req.body.message.contents[0].text)
+      console.log(recipients)
 
-    await testCommandIsValid(command)
-      .then(() => getMentoringIdIs<number>(+complement))
-      .then(senderIsMentorOrParticipant(to))
-      .then(formatMultContactsMessageText(from))
-      .then(sendingMultMessageWhatsappZenvia)
-      .then(() => formatContactMessageText(from, to, message ))
-      .then(sendingMessageWhatsappZenvia)
-      .catch(async(err) => {
-        const contact = formatContactMessageText(from, to, err)
-        await sendingMessageWhatsappZenvia(contact)
-      })
+      const sender = await compose(
+        formatContactMessageText,
+        sendingMessageWhatsappZenvia
+      )({from, to, message} )
+      console.log(sender)
+
+    } catch (error) {
+      const sender = await compose(
+        formatContactMessageText,
+        sendingMessageWhatsappZenvia
+      )({from, to, message:error} )
+
+      console.log(sender)
+    }
 
     res.status(200).json({status: 200, message: 'Ok'})  
   } catch (error) {
@@ -59,9 +71,21 @@ const provider = setAxiosConfig
   (ZENVIA_SANDBOX_TOKEN)
   ('POST')
 
-const testCommandIsValid = testContentArray<string>(commandList)
+const testCommandIsValid = async (requestItens: {command: string, complement:string, text:string}) => {
+  await testContentArray<string>(commandList)(requestItens.command)
+  return +requestItens.complement
+}
+
 const sendingMessageWhatsappZenvia = sendingMessage(provider)
-const sendingMultMessageWhatsappZenvia = (contacts:any) => contacts.map(sendingMessageWhatsappZenvia)
+
+const sendingMultMessageWhatsappZenvia = async (contacts:any) => {
+  const result = []
+  for(const contact of contacts){
+    const response = await sendingMessageWhatsappZenvia(contact)
+    result.push(response)
+  }
+  return result
+}
 const getMentoringIdIs = testAnItemAgaintsVariousData(mentoringData)('id')
 
 export default handler

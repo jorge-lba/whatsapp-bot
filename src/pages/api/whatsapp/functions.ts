@@ -2,6 +2,17 @@ import axios, { AxiosInstance } from 'axios'
 
 import { Mentoring, BodySengingText, Method, MessageAndTo } from '../../../interfaces'
 
+
+const compose = (...funcs: Function[]) => async (value: any) =>{
+  let result = value
+  for(const func of funcs){
+    result = await func(result)
+  }
+  return result
+}
+
+const toLowerCase = (text: string) => text.toLowerCase()
+
 const splitAndFormatMessage = (message: string) => {
   const [command, complement, text] = message.trim().replace(' ', '#').split('#')
 
@@ -13,7 +24,7 @@ const splitAndFormatMessage = (message: string) => {
 }
 
 const sendingMessage =(request: AxiosInstance) => 
-  async (contact:BodySengingText) => await request({data: JSON.stringify(contact)})
+  async (contact:BodySengingText) => (await request({data: JSON.stringify(contact)})).data
 
 const setAxiosConfig = (baseURL:string) => 
   (contentType:string) => 
@@ -62,19 +73,21 @@ const senderIsMentorOrParticipant = (from: string) => (mentoring:Mentoring) => {
   throw 'Você não faz parte dessa mentoria, verifique o ID da sua mentoria'
 }
 
-const formatContactMessageText = (from: string, to:string, message:string):BodySengingText => ({
-  from,
-    to,
+const formatContactMessageText = (contact:{from: string, to:string, message:string}):BodySengingText => ({
+  from: contact.from,
+    to: contact.to,
     contents:[{ 
       type: 'text',
-      text: message
+      text: contact.message
     }]
 })
 
 const formatMultContactsMessageText = (from: string) => 
-  (contacts:MessageAndTo[]) => contacts.map(({message, to})=> formatContactMessageText(from, to, message))
+  (contacts:MessageAndTo[]) => contacts.map(({message, to})=> formatContactMessageText({from, to, message}))
 
 export {
+  compose,
+  toLowerCase,
   splitAndFormatMessage,
   setAxiosConfig,
   sendingMessage,
