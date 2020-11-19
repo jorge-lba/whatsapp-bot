@@ -43,25 +43,23 @@ const testContentArray = <T>(array:T[]) => (value:T) => {
   throw 'Comando inválido'
 }
 
-export function senderIsMentorOrParticipant(from:string){
-  return function(mentoring:Mentoring){
-    if(mentoring.mentor.whatsapp === from){
-      return mentoring.team.participants.map(participant => ({
-        to:participant.whatsapp,
-        message: `O mentor(a) ${mentoring.mentor.name} está esperando o seu time para a mentoria.`
-      }))
-    }
-    
-    const participant = mentoring.team.participants.find(participant => participant.whatsapp === from)
-    if(participant){
-      return [{
-        to: mentoring.mentor.whatsapp,
-        message: `Boa tarde, o time ${mentoring.team.id} está esperando seu contato para a mentoria.`  
-      }]
-    }
-
-    throw 'Você não faz parte dessa mentoria, verifique o ID da sua mentoria'
+const senderIsMentorOrParticipant = (from: string) => (mentoring:Mentoring) => {
+  if(mentoring.mentor.whatsapp === from){
+    return mentoring.team.participants.map(participant => ({
+      to:participant.whatsapp,
+      message: `O mentor(a) ${mentoring.mentor.name} está esperando o seu time para a mentoria.`
+    }))
   }
+  
+  const participant = mentoring.team.participants.find(participant => participant.whatsapp === from)
+  if(participant){
+    return [{
+      to: mentoring.mentor.whatsapp,
+      message: `Boa tarde, o time ${mentoring.team.id} está esperando seu contato para a mentoria.`  
+    }]
+  }
+
+  throw 'Você não faz parte dessa mentoria, verifique o ID da sua mentoria'
 }
 
 export function formatContactMessageText(from: string, to: string, message: string): BodySengingText{
@@ -84,5 +82,6 @@ export {
   sendingMessage,
   formatMultContactsMessageText,
   testAnItemAgaintsVariousData,
-  testContentArray
+  testContentArray,
+  senderIsMentorOrParticipant
 }
