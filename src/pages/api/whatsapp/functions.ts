@@ -37,7 +37,7 @@ const testAnItemAgaintsVariousData = <T extends {[key:string]:any}>(data:T[]) =>
     throw 'Mentoria inválida'
   }
 
-const testContentArray = <T>(array:T[]) => (value:T) => {
+const testContentArray = <T>(array:T[]) => async (value:T) => {
   const result = array.find(element => element === value)
   if(result) return result
   throw 'Comando inválido'
