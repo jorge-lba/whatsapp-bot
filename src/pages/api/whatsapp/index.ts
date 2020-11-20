@@ -8,8 +8,7 @@ import {
   setAxiosConfig,
   formatMultContactsMessageText,
   testAnItemAgaintsVariousData,
-  compose,
-  toLowerCase
+  compose
 }from './functions'
 
 import mentoringData from '../../../utils/mentoring-data' // Esse item é um mock para simular uma resposta do banco de dados
@@ -27,7 +26,6 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
 
     try {
       const recipients = await compose(
-        toLowerCase,
         splitAndFormatMessage,
         testCommandIsValid,
         getMentoringIdIs,
@@ -72,7 +70,7 @@ const provider = setAxiosConfig
   ('POST')
 
 const testCommandIsValid = async (requestItens: {command: string, complement:string, text:string}) => {
-  await testContentArray<string>(commandList)(requestItens.command)
+  await testContentArray<string>(commandList)(requestItens.command.toLowerCase())
   return +requestItens.complement
 }
 
