@@ -7,7 +7,8 @@
 [![feito-no-VSCode](https://img.shields.io/badge/VSCode-1f425f.svg)](https://code.visualstudio.com/) [![made-with-typescript](https://img.shields.io/badge/Typescript-1f425f.svg)](https://www.typescriptlang.org/) [![API-Zenvia](https://img.shields.io/badge/API-Zenvia-1f425f.svg)](https://app.zenvia.com/) [![Next.js](https://img.shields.io/badge/Next.js-1f425f.svg)](https://nextjs.org/) [![Jest](https://img.shields.io/badge/Jest-1f425f.svg)](https://jestjs.io/)
  ## Como Funciona
 
-Envie o comando `mentoria` mais o id `#1` - `mentoria#1`
+Envie o comando `mentoria` mais o id `#1` - `mentoria#1`.
+
 Após o envio o sistema vai verificar se você pertence a essa mentoria e enviar os alertas.
 
 | Comando | Participante | Mentor |
@@ -41,7 +42,7 @@ const setAxiosConfig = (baseURL:string) =>
 ```
 O **segundo parâmetro** é composto de um objeto com as informações necessárias para o envio da mensagem:
 ```ts
-const contact = {
+type BodySengingText = {
   from: string,
   to: string,
   contents: [
@@ -53,3 +54,9 @@ const contact = {
 }
 ```
 O retorno da função contem o `body` de resposta da requisição.
+
+### Conclusão
+
+Iniciei esse projeto para testar a o `Next.js` e a `API Zenvia` de whatsapp.
+O `Next.js` foi bem simples de usar e de fazer o deploy.
+A `API Zenvia` também foi muito fácil de utilizar, como ela funciona com base em `requisições` as chamadas tanto de envio quanto de recebimento são simples de usar, neste projeto não utilizei o recebimento dos `status` das mensagens, mas a implementação segue o mesmo principio da de recebimento das mensagens. 
