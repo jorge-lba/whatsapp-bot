@@ -19,7 +19,7 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
     const message = 'Enviamos um aviso para os interessados.'
 
     try {
-      const recipients = await compose(
+        await compose(
         splitAndFormatMessage,
         testCommandIsValid,
         getMentoringIdIs,
@@ -27,21 +27,17 @@ async function message(_req: NextApiRequest, res: NextApiResponse){
         formatMultContactsMessageText(from),
         sendingMultMessageWhatsappZenvia
       )(_req.body.message.contents[0].text)
-      console.log(recipients)
 
-      const sender = await compose(
+      await compose(
         formatContactMessageText,
         sendingMessageWhatsappZenvia
       )({from, to, message} )
-      console.log(sender)
 
     } catch (error) {
-      const sender = await compose(
+      await compose(
         formatContactMessageText,
         sendingMessageWhatsappZenvia
       )({from, to, message:error} )
-
-      console.log(sender)
     }
 
     res.status(200).json({status: 200, message: 'Ok'})  

@@ -1,24 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { NextApiRequest, NextApiResponse } from 'next'
-
 import { Mentoring, BodySengingText, Method, MessageAndTo } from '../../../interfaces'
-
-
-const methodsConfig = (GET:Function , POST:Function, PUT:Function, DELETE:Function) =>
-  (_req: NextApiRequest, res: NextApiResponse) =>
-  async(method:string) => {
-    method = method.toUpperCase()
-    try {
-      if(method === 'GET') return await GET(_req, res)
-      if(method === 'POST') return await POST(_req, res)
-      if(method === 'PUT') return await PUT(_req, res)
-      if(method === 'DELETE') return await DELETE(_req, res)
-      throw 'Rota Invalida.'
-    } catch (error) {
-      res.status(500).json({ statusCode: 500, message: error })
-    }
-}
-
 
 const compose = (...funcs: Function[]) => async (value: any) =>{
   let result = value
@@ -103,7 +84,6 @@ const formatMultContactsMessageText = (from: string) =>
   (contacts:MessageAndTo[]) => contacts.map(({message, to})=> formatContactMessageText({from, to, message}))
 
 export {
-  methodsConfig,
   compose,
   toLowerCase,
   splitAndFormatMessage,
