@@ -22,7 +22,7 @@ export type Mentoring = {
   team: Team
 }
 
-export type BodySengingText = {
+export type BodySendingText = {
   from: string,
   to: string,
   contents: [

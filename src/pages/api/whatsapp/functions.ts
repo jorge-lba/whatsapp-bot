@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { Mentoring, BodySengingText, Method, MessageAndTo } from '../../../interfaces'
+import { Mentoring, BodySendingText, Method, MessageAndTo } from '../../../interfaces'
 
 const compose = (...funcs: Function[]) => async (value: any) =>{
   let result = value
@@ -22,7 +22,7 @@ const splitAndFormatMessage = (message: string) => {
 }
 
 const sendingMessage =(request: AxiosInstance) => 
-  async (contact:BodySengingText) => (await request({data: JSON.stringify(contact)})).data
+  async (contact:BodySendingText) => (await request({data: JSON.stringify(contact)})).data
 
 const setAxiosConfig = (baseURL:string) => 
   (contentType:string) => 
@@ -71,7 +71,7 @@ const senderIsMentorOrParticipant = (from: string) => (mentoring:Mentoring) => {
   throw 'Você não faz parte dessa mentoria, verifique o ID da sua mentoria'
 }
 
-const formatContactMessageText = (contact:{from: string, to:string, message:string}):BodySengingText => ({
+const formatContactMessageText = (contact:{from: string, to:string, message:string}):BodySendingText => ({
   from: contact.from,
     to: contact.to,
     contents:[{ 

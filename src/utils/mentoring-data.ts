@@ -7,7 +7,7 @@ const mentoring:Mentoring[] = [{
   date: new Date(),
   mentor:{
     id: 1,
-    name: 'Jane',
+    name: 'Ana',
     whatsapp:`${process.env.WHATSAPP_MENTOR}`
   },
   team:{
@@ -15,12 +15,7 @@ const mentoring:Mentoring[] = [{
     participants:[
       {
         id: 1,
-        name: 'Carlos',
-        whatsapp: `${process.env.WHATSAPP_PARTICIPANT}`
-      },
-      {
-        id: 2,
-        name: 'Jéssica',
+        name: 'Jorge',
         whatsapp: `${process.env.WHATSAPP_PARTICIPANT}`
       }
     ]
