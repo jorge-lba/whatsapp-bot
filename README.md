@@ -1,41 +1,55 @@
-# TypeScript Next.js example
+# Mentoring Alert
 
-This is a really simple project that shows the usage of Next.js with TypeScript.
+ O objetivo deste projeto é possibilitar que tanto os mentores quanto os participantes possam enviar um alerta via whatsapp caso uma das partes não tenham comparecido para a call.
 
-## Deploy your own
+ Para manter os números de contato privados foi utilizada a API de Whatsapp ZENVIA para fazer o envio dos alertas.
 
-Deploy the example using [Vercel](https://vercel.com):
+[![feito-no-VSCode](https://img.shields.io/badge/VSCode-1f425f.svg)](https://code.visualstudio.com/) [![made-with-typescript](https://img.shields.io/badge/Typescript-1f425f.svg)](https://www.typescriptlang.org/) [![API-Zenvia](https://img.shields.io/badge/API-Zenvia-1f425f.svg)](https://app.zenvia.com/) [![Next.js](https://img.shields.io/badge/Next.js-1f425f.svg)](https://nextjs.org/) [![Jest](https://img.shields.io/badge/Jest-1f425f.svg)](https://jestjs.io/)
+ ## Como Funciona
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/vercel/next.js/tree/canary/examples/with-typescript)
+Envie o comando `mentoria` mais o id `#1` - `mentoria#1`
+Após o envio o sistema vai verificar se você pertence a essa mentoria e enviar os alertas.
 
-## How to use it?
+| Comando | Participante | Mentor |
+| :-----: | :----------: | :----: |
+|![Alt Text](https://github.com/jorge-lba/whatsapp-bot/blob/main/assets/send_msg.gif?raw=true)|![Alt Text](https://github.com/jorge-lba/whatsapp-bot/blob/main/assets/msg_participant.gif?raw=true)|![Alt Text](https://github.com/jorge-lba/whatsapp-bot/blob/main/assets/msg_mentor.gif?raw=true)|
+| Comando enviado por uma das partes. | Alerta recebido pelo participante. | Alerta recebido pelo mentor. |
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
+## API Zenvia
 
-```bash
-npx create-next-app --example with-typescript with-typescript-app
-# or
-yarn create next-app --example with-typescript with-typescript-app
+Para utilizar a API utilizei os dados da [documentação](https://zenvia.github.io/zenvia-openapi-spec/v2/#section/WhatsApp-sender-and-recipient), [sandbox](https://app.zenvia.com/home/sandbox) e tutorial em [video](https://youtu.be/e6KgvZQ7XDY?t=1044).
+
+O envio de mensagem é efetuado através de uma requisição `http` do tipo `POST`. Exemplo:
+```ts
+const sendingMessage =(request: AxiosInstance) => 
+  async (contact:BodySengingText) => 
+    (await request({data: JSON.stringify(contact)})).data
 ```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/import?filter=next.js&utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
-
-## Notes
-
-This example shows how to integrate the TypeScript type system into Next.js. Since TypeScript is supported out of the box with Next.js, all we have to do is to install TypeScript.
-
+Está função tem como entrada no **primeiro parâmetro** uma configuração  `axios`:
+```ts
+const setAxiosConfig = (baseURL:string) => 
+  (contentType:string) => 
+  (token:string) => 
+  (method:Method) => axios.create({
+    baseURL, 
+    headers: {
+      'content-type': contentType,
+      'X-API-TOKEN': token
+    },
+    method: method
+  })
 ```
-npm install --save-dev typescript
+O **segundo parâmetro** é composto de um objeto com as informações necessárias para o envio da mensagem:
+```ts
+const contact = {
+  from: string,
+  to: string,
+  contents: [
+    {
+      type: string,
+      text: string
+    }
+  ]
+}
 ```
-
-To enable TypeScript's features, we install the type declarations for React and Node.
-
-```
-npm install --save-dev @types/react @types/react-dom @types/node
-```
-
-When we run `next dev` the next time, Next.js will start looking for any `.ts` or `.tsx` files in our project and builds it. It even automatically creates a `tsconfig.json` file for our project with the recommended settings.
-
-Next.js has built-in TypeScript declarations, so we'll get autocompletion for Next.js' modules straight away.
-
-A `type-check` script is also added to `package.json`, which runs TypeScript's `tsc` CLI in `noEmit` mode to run type-checking separately. You can then include this, for example, in your `test` scripts.
+O retorno da função contem o `body` de resposta da requisição.
